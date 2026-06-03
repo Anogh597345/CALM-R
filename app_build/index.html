@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALM-R // Phase 01</title>
+    <meta name="description" content="CALM-R: A Human-Machine Interface designed for peak cognitive performance and objective data management.">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-canvas: #000000;
+            --surface-alt: #0B0F19;
+            --border-charcoal: #1F2937;
+            --text-primary: #ffffff;
+            --text-muted: #9CA3AF;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            font-family: var(--font-display);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-wrapper {
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 0 32px;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 32px 0;
+            border-bottom: 1px solid var(--border-charcoal);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .navbar-tag {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            font-size: 12px;
+            letter-spacing: 0.05em;
+        }
+
+        /* Hero Wrapper */
+        .hero-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 64px;
+            padding: 80px 0;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .hero-text-layer {
+            flex: 1;
+            min-width: 320px;
+        }
+
+        .hero-heading {
+            font-size: 48px;
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        .hero-subhead {
+            color: var(--text-muted);
+            font-family: var(--font-display); /* Or 'Inter' if specified, but instruction implies mapping to soft gray */
+            font-size: 18px;
+            margin-bottom: 48px;
+            max-width: 480px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .input-email {
+            background-color: var(--border-charcoal); /* Matte-gray */
+            border: 1px solid var(--border-charcoal);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            padding: 16px 24px;
+            border-radius: 4px; /* Low border-radius */
+            outline: none;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: none; /* No inner shadows */
+        }
+
+        .input-email::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-email:focus {
+            border-color: var(--text-primary);
+        }
+
+        .cta-btn {
+            background-color: var(--text-primary);
+            color: var(--bg-canvas);
+            border: none;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 16px;
+            padding: 16px 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        .cta-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* Telemetry Container */
+        .telemetry-container {
+            flex: 1.2;
+            min-width: 400px;
+            aspect-ratio: 16 / 9;
+            border: 1px solid var(--border-charcoal);
+            background-color: var(--surface-alt);
+            padding: 24px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: #4edea3; /* Subtle green for terminal ok status or just white/muted */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        /* Fade out at the top of terminal */
+        .telemetry-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--surface-alt) 0%, transparent 100%);
+            z-index: 2;
+        }
+
+        .telemetry-stream {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            color: var(--text-muted);
+            will-change: transform;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--border-charcoal);
+            margin-top: auto;
+        }
+
+        .feature-cell {
+            padding: 40px 32px;
+            border-right: 1px solid var(--border-charcoal);
+        }
+
+        .feature-cell:last-child {
+            border-right: none;
+        }
+
+        .feature-cell h3 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .feature-cell p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 12px;
+            line-height: 1.6;
+            max-width: 90%;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 40px 0;
+            border-top: 1px solid var(--border-charcoal);
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-brand {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .footer-copyright {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-links a, .footer-links span {
+            color: var(--text-muted);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .text-accent {
+            color: #4edea3 !important;
+        }
+
+        @media (max-width: 900px) {
+            .hero-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 48px 0;
+            }
+            .telemetry-container {
+                width: 100%;
+                min-width: unset;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .feature-cell {
+                border-right: none;
+                border-bottom: 1px solid var(--border-charcoal);
+                padding: 32px 0;
+            }
+            .feature-cell:last-child {
+                border-bottom: none;
+            }
+            .app-wrapper {
+                padding: 0 24px;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+            .input-email {
+                max-width: 100%;
+            }
+            .footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 32px;
+            }
+            .footer-links {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: var(--bg-canvas);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader-text::after {
+            content: ' INITIALIZING SYSTEM...';
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        
+        .loader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-text">[HMI]</div>
+    </div>
+
+    <div class="app-wrapper">
+        <header class="navbar">
+            <div class="navbar-brand">CALM-R</div>
+            <div class="navbar-tag">[ hmi // phase.01 ]</div>
+        </header>
+
+        <main class="hero-wrapper">
+            <div class="hero-text-layer">
+                <h1 class="hero-heading">The mouse was built for a different era.</h1>
+                <p class="hero-subhead">We are designing a new paradigm for human-machine interaction, built purely for peak cognitive performance and zero friction.</p>
+                
+                <form id="waitlist-form" class="input-group">
+                    <input type="hidden" name="_subject" value="New CALM-R Waitlist Signup">
+                    <input type="email" name="email" class="input-email" placeholder="email@address.com" required>
+                    <button type="submit" class="cta-btn">Join Private Beta</button>
+                </form>
+            </div>
+
+            <div class="telemetry-container">
+                <div class="telemetry-stream" id="telemetryStream"></div>
+            </div>
+        </main>
+
+        <section class="feature-grid">
+            <div class="feature-cell">
+                <h3>Native Gaze Navigation</h3>
+                <p>Decodes continuous real-time iris movements via native webcams at 60 FPS. Zero custom hardware required.</p>
+            </div>
+            <div class="feature-cell">
+                <h3>Gestural Core Matrices</h3>
+                <p>Translate natural hand skeletal tracking lines into instant OS desktop macros and macro pipeline events.</p>
+            </div>
+            <div class="feature-cell">
+                <h3>Proactive Workflow Prediction</h3>
+                <p>An underlying lightweight telemetry framework that learns system focus patterns to clear digital workspace friction.</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-left">
+                <div class="footer-brand">CALM-R</div>
+                <div class="footer-copyright">&copy; 2026 CALM-R // RETHINKING THE HUMAN-MACHINE INTERFACE</div>
+            </div>
+            <div class="footer-links">
+                <span class="text-accent">COMING SOON // MID-2028</span>
+                <a href="#">DOCUMENTATION</a>
+                <a href="#">LEGAL</a>
+                <a href="#">SYSTEM STATUS</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Loader logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.classList.add('loader-hidden');
+                setTimeout(() => loader.remove(), 500);
+            }, 1200);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Form Submission Logic
+            const form = document.getElementById('waitlist-form');
+            if(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const btn = this.querySelector('button');
+                    btn.textContent = 'SENDING...';
+                    btn.style.opacity = '0.7';
+                    
+                    fetch("https://formsubmit.co/ajax/arunodaybanerjee66@gmail.com", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: this.email.value,
+                            _subject: this._subject.value,
+                            Message: `Dear Arunoday,\n\nI would like to request access to the CALM-R private beta. Please add my contact email (${this.email.value}) to the priority waitlist.\n\nLooking forward to experiencing the next paradigm of human-machine interaction.\n\nSincerely,\nA Future CALM-R Operator`
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        btn.textContent = 'JOINED [OK]';
+                        btn.style.backgroundColor = '#4edea3'; // Accent green for success
+                        btn.style.color = '#000000';
+                        btn.style.opacity = '1';
+                        this.email.value = '';
+                    })
+                    .catch(error => {
+                        btn.textContent = 'ERROR / RETRY';
+                        btn.style.opacity = '1';
+                    });
+                });
+            }
+
+            const streamContainer = document.getElementById('telemetryStream');
+            const MAX_LINES = 18;
+            
+            // For smooth scrolling simulation
+            let logs = [];
+            
+            // Populate initial lines so it's not empty
+            for(let i = 0; i < MAX_LINES; i++) {
+                logs.push(generateTelemetryString());
+                appendLogElement(logs[i]);
+            }
+            
+            function generateTelemetryString() {
+                const x = (Math.random() * 2 - 1).toFixed(3);
+                const y = (Math.random() * 2 - 1).toFixed(3);
+                const intent = Math.random().toFixed(4);
+                return `TELMETRY_STREAM // COORD_SET { X: ${x >= 0 ? '+'+x : x} Y: ${y >= 0 ? '+'+y : y} } // INTENT_SIG: ${intent} // [OK]`;
+            }
+
+            function appendLogElement(text) {
+                const line = document.createElement('div');
+                line.textContent = text;
+                streamContainer.appendChild(line);
+            }
+
+            // Interval loop every 50ms
+            setInterval(() => {
+                const newLog = generateTelemetryString();
+                
+                // Add new log to DOM
+                appendLogElement(newLog);
+                
+                // Remove oldest log to create scrolling effect
+                if (streamContainer.children.length > MAX_LINES) {
+                    streamContainer.removeChild(streamContainer.firstChild);
+                }
+            }, 50);
+        });
+    </script>
+</body>
+</html>
