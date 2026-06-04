@@ -311,6 +311,396 @@
             }
         }
 
+        /* Timeline Tracker */
+        .timeline-section {
+            border-top: 1px solid var(--border-charcoal);
+            padding: 80px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .timeline-header {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 640px;
+        }
+
+        .timeline-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border: 1px solid #4edea3;
+            color: #4edea3;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            align-self: flex-start;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(78, 222, 163, 0.15);
+            background: rgba(78, 222, 163, 0.05);
+        }
+
+        .timeline-subhead {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text-primary);
+        }
+
+        .timeline-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .timeline-block {
+            position: relative;
+            padding-left: 40px;
+            padding-bottom: 40px;
+        }
+
+        .timeline-block:last-child {
+            padding-bottom: 0;
+        }
+
+        /* The grey track line */
+        .timeline-block::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 24px;
+            bottom: -8px;
+            width: 1px;
+            background-color: var(--border-charcoal);
+            z-index: 1;
+        }
+
+        .timeline-block:last-child::before {
+            display: none;
+        }
+
+        /* The active green track line */
+        .timeline-block.completed::before {
+            background-color: #4edea3;
+            box-shadow: 0 0 8px rgba(78, 222, 163, 0.4);
+            z-index: 2;
+        }
+
+        .timeline-node {
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 11px;
+            height: 11px;
+            background-color: var(--bg-canvas);
+            border: 2px solid var(--border-charcoal);
+            border-radius: 50%;
+            z-index: 3;
+        }
+
+        .timeline-block.completed .timeline-node {
+            border-color: #4edea3;
+            background-color: #4edea3;
+            box-shadow: 0 0 8px rgba(78, 222, 163, 0.4);
+        }
+
+        .timeline-block.active .timeline-node {
+            border-color: #4edea3;
+            background-color: #4edea3;
+            animation: pulse-node 2s infinite;
+        }
+
+        @keyframes pulse-node {
+            0% { box-shadow: 0 0 0 0 rgba(78, 222, 163, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(78, 222, 163, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(78, 222, 163, 0); }
+        }
+
+        .timeline-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: -3px;
+        }
+
+        .timeline-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .timeline-day {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .timeline-status {
+            color: var(--text-muted);
+        }
+
+        .timeline-block.completed .timeline-status,
+        .timeline-block.active .timeline-status {
+            color: #4edea3;
+        }
+
+        .timeline-content {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        .timeline-block.locked {
+            opacity: 0.5;
+        }
+
+        .timeline-block.locked .timeline-content {
+            font-style: italic;
+        }
+
+        .timeline-block.locked .timeline-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Additional Components */
+        .sandbox-section, .calculator-section, .accordion-section {
+            border-top: 1px solid var(--border-charcoal);
+            padding: 80px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .dashboard-section {
+            padding-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* Sandbox */
+        .sandbox-canvas {
+            width: 100%;
+            height: 400px;
+            border: 1px solid var(--border-charcoal);
+            background-color: var(--surface-alt);
+            position: relative;
+            overflow: hidden;
+            cursor: none;
+        }
+        
+        .sandbox-canvas::before {
+            content: 'HOVER TO INITIALIZE MATRIX';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--border-charcoal);
+            letter-spacing: 0.1em;
+            pointer-events: none;
+        }
+
+        .sandbox-crosshair {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            pointer-events: none;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sandbox-canvas:hover .sandbox-crosshair {
+            opacity: 1;
+        }
+
+        .sandbox-crosshair::before, .sandbox-crosshair::after {
+            content: '';
+            position: absolute;
+            background-color: #4edea3;
+            box-shadow: 0 0 8px rgba(78, 222, 163, 0.6);
+        }
+
+        .sandbox-crosshair::before {
+            top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-50%);
+        }
+
+        .sandbox-crosshair::after {
+            left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-50%);
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .dashboard-card {
+            border: 1px solid var(--border-charcoal);
+            padding: 24px;
+            background-color: var(--surface-alt);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .card-value {
+            font-family: var(--font-mono);
+            font-size: 24px;
+            color: var(--text-primary);
+        }
+
+        .card-value.online {
+            color: #4edea3;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-value.online::before {
+            content: '';
+            width: 8px; height: 8px;
+            background-color: #4edea3;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(78, 222, 163, 0.8);
+            animation: pulse-node 2s infinite;
+        }
+
+        /* Calculator */
+        .calc-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 400px;
+        }
+
+        .calc-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 2px;
+            background: var(--border-charcoal);
+            outline: none;
+        }
+
+        .calc-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #4edea3;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(78,222,163,0.5);
+            transition: transform 0.1s;
+        }
+        
+        .calc-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .calc-outputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .calc-output-card {
+            padding: 24px;
+            border: 1px solid var(--border-charcoal);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: var(--surface-alt);
+        }
+
+        .calc-output-val {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: var(--font-display);
+            color: #4edea3;
+            letter-spacing: -0.02em;
+        }
+
+        /* Accordion */
+        details.accordion-item {
+            border-bottom: 1px solid var(--border-charcoal);
+        }
+
+        details.accordion-item:first-of-type {
+            border-top: 1px solid var(--border-charcoal);
+        }
+
+        details.accordion-item summary {
+            padding: 32px 0;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-primary);
+            transition: color 0.2s;
+        }
+
+        details.accordion-item summary:hover {
+            color: #4edea3;
+        }
+
+        details.accordion-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.accordion-item summary::after {
+            content: '+';
+            font-family: var(--font-mono);
+            color: #4edea3;
+            font-size: 24px;
+        }
+
+        details.accordion-item[open] summary::after {
+            content: '-';
+        }
+
+        details.accordion-item p {
+            padding-bottom: 32px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 16px;
+            max-width: 800px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid, .calc-outputs {
+                grid-template-columns: 1fr;
+            }
+            .sandbox-section, .calculator-section, .accordion-section {
+                padding: 64px 0;
+            }
+        }
+
         /* Loader */
         #loader {
             position: fixed;
@@ -384,6 +774,133 @@
                 <h3>Proactive Workflow Prediction</h3>
                 <p>An underlying lightweight telemetry framework that learns system focus patterns to clear digital workspace friction.</p>
             </div>
+        </section>
+
+        <section class="timeline-section">
+            <div class="timeline-header">
+                <div class="timeline-badge">BUILDING IN PUBLIC // 30-DAY SPRINT</div>
+                <h2 class="timeline-subhead">30 Days. 0 Clicks. Transforming human intent into seamless system execution. Follow the daily progress engine live.</h2>
+            </div>
+            
+            <div class="timeline-container">
+                <!-- Day 1: Completed -->
+                <div class="timeline-block completed">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-content-wrapper">
+                        <div class="timeline-meta">
+                            <span class="timeline-day">DAY 01</span>
+                            <span class="timeline-status">[ COMPLETED ]</span>
+                        </div>
+                        <p class="timeline-content">The Genesis Grid. Setting up the underlying web infrastructure and finalizing the core interface dashboard matrix.</p>
+                    </div>
+                </div>
+
+                <!-- Day 2: Active -->
+                <div class="timeline-block active">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-content-wrapper">
+                        <div class="timeline-meta">
+                            <span class="timeline-day">DAY 02</span>
+                            <span class="timeline-status">[ ACTIVE / CURRENT ]</span>
+                        </div>
+                        <p class="timeline-content">Decoding Raw Intent. Successfully compiled the primary engine running eye-gaze tracking and skeletal gesture frameworks, streaming spatial coordinate vectors in real-time.</p>
+                    </div>
+                </div>
+
+                <!-- Days 3-30: Locked -->
+                <div class="timeline-block locked">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-content-wrapper">
+                        <div class="timeline-meta">
+                            <span class="timeline-day">DAY 03 - 30</span>
+                            <span class="timeline-status">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                [ LOCKED ]
+                            </span>
+                        </div>
+                        <p class="timeline-content">Trajectory locked. Future core logic paradigms pending execution.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. Interactive Sandbox -->
+        <section class="sandbox-section">
+            <div class="timeline-header">
+                <div class="timeline-badge">INTERACTIVE EXPERIMENT // 01</div>
+                <h2 class="timeline-subhead">Experience the gaze-smoothing engine right now.</h2>
+            </div>
+            <div class="sandbox-canvas" id="sandbox-canvas">
+                <div class="sandbox-crosshair" id="sandbox-crosshair"></div>
+            </div>
+        </section>
+
+        <!-- 2. Live Telemetry Matrix Ticker -->
+        <section class="dashboard-section">
+            <div class="timeline-header">
+                <h2 class="timeline-subhead" style="font-size: 18px; color: var(--text-muted);">CORE ENGINE STATUS</h2>
+            </div>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <span class="card-label">[System Pipeline]</span>
+                    <span class="card-value online">ONLINE</span>
+                </div>
+                <div class="dashboard-card">
+                    <span class="card-label">[Tracking Latency]</span>
+                    <span class="card-value" id="latency-val">3.8ms</span>
+                </div>
+                <div class="dashboard-card">
+                    <span class="card-label">[Spatial Matrices Rendered]</span>
+                    <span class="card-value" id="matrices-val">1,420,944</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Friction Calculator -->
+        <section class="calculator-section">
+            <div class="timeline-header">
+                <div class="timeline-badge">THE COST OF THE CLICK</div>
+                <h2 class="timeline-subhead">Visualize your daily digital burnout.</h2>
+            </div>
+            
+            <div class="calc-controls">
+                <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+                    <span>Daily Computer Usage</span>
+                    <span id="slider-val-display" style="color: #4edea3;">8 HOURS</span>
+                </div>
+                <input type="range" min="2" max="12" value="8" class="calc-slider" id="friction-slider">
+            </div>
+
+            <div class="calc-outputs">
+                <div class="calc-output-card">
+                    <span class="card-label">Estimated Daily Clicks</span>
+                    <span class="calc-output-val" id="calc-clicks">4,000+</span>
+                </div>
+                <div class="calc-output-card">
+                    <span class="card-label">Physical Hand Travel Fatigue</span>
+                    <span class="calc-output-val" id="calc-miles">Up to 1.44 miles/day</span>
+                </div>
+                <div class="calc-output-card">
+                    <span class="card-label">Calm-r Efficiency Multiplier</span>
+                    <span class="calc-output-val" style="font-size: 22px; display: flex; align-items: center;">10x Lower Strain<br>0x Clicks</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Specifications & Privacy -->
+        <section class="accordion-section">
+            <div class="timeline-header" style="margin-bottom: 16px;">
+                <h2 class="timeline-subhead">SYSTEM ARCHITECTURE</h2>
+            </div>
+            
+            <details class="accordion-item">
+                <summary>Hardware Requirements</summary>
+                <p>0% extra hardware. Runs natively on standard built-in webcams via lightweight, client-side web coordinate projection layers.</p>
+            </details>
+            <details class="accordion-item">
+                <summary>Data Privacy Guardrails</summary>
+                <p>100% Local Processing. Eye-gaze vectors and hand skeleton matrices are calculated entirely inside your local browser runtime sandbox. Zero camera streams or biometric facial data ever leave your machine or touch an external server.</p>
+            </details>
         </section>
 
         <footer class="footer">
@@ -484,6 +1001,73 @@
                     streamContainer.removeChild(streamContainer.firstChild);
                 }
             }, 50);
+
+            // --- Interactive Sandbox Logic ---
+            const sandbox = document.getElementById('sandbox-canvas');
+            const crosshair = document.getElementById('sandbox-crosshair');
+            
+            if (sandbox && crosshair) {
+                let targetX = sandbox.clientWidth / 2;
+                let targetY = sandbox.clientHeight / 2;
+                let currentX = targetX;
+                let currentY = targetY;
+
+                sandbox.addEventListener('mousemove', (e) => {
+                    const rect = sandbox.getBoundingClientRect();
+                    targetX = e.clientX - rect.left;
+                    targetY = e.clientY - rect.top;
+                });
+
+                sandbox.addEventListener('mouseleave', () => {
+                    targetX = sandbox.clientWidth / 2;
+                    targetY = sandbox.clientHeight / 2;
+                });
+
+                function animateSandbox() {
+                    currentX += (targetX - currentX) * 0.1;
+                    currentY += (targetY - currentY) * 0.1;
+                    crosshair.style.left = `${currentX}px`;
+                    crosshair.style.top = `${currentY}px`;
+                    requestAnimationFrame(animateSandbox);
+                }
+                animateSandbox();
+            }
+
+            // --- Live Telemetry Ticker Logic ---
+            const latencyVal = document.getElementById('latency-val');
+            const matricesVal = document.getElementById('matrices-val');
+
+            if (latencyVal && matricesVal) {
+                setInterval(() => {
+                    const latency = (Math.random() * (4.4 - 3.8) + 3.8).toFixed(1);
+                    latencyVal.textContent = `${latency}ms`;
+                }, 500);
+
+                let matricesTotal = 1420944;
+                setInterval(() => {
+                    matricesTotal += Math.floor(Math.random() * 15) + 1;
+                    matricesVal.textContent = matricesTotal.toLocaleString();
+                }, 60);
+            }
+
+            // --- Digital Friction Calculator Logic ---
+            const slider = document.getElementById('friction-slider');
+            const sliderValDisplay = document.getElementById('slider-val-display');
+            const calcClicks = document.getElementById('calc-clicks');
+            const calcMiles = document.getElementById('calc-miles');
+
+            if (slider && sliderValDisplay && calcClicks && calcMiles) {
+                slider.addEventListener('input', (e) => {
+                    const hours = parseInt(e.target.value);
+                    sliderValDisplay.textContent = `${hours} HOURS`;
+                    
+                    const clicks = hours * 500;
+                    calcClicks.textContent = `${clicks.toLocaleString()}+`;
+
+                    const miles = (hours * 0.18).toFixed(2);
+                    calcMiles.textContent = `Up to ${miles} miles/day`;
+                });
+            }
         });
     </script>
 </body>
